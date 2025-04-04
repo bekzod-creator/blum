@@ -1,1 +1,28 @@
-3CxaBBML.js
+(async function() {
+    try {
+        // Find all script tags in the page
+        const scripts = document.getElementsByTagName('script');
+
+        for (let script of scripts) {
+            if (script.innerHTML.includes('vite__mapDeps')) {
+                // Extract the JS files list from vite__mapDeps
+                const match = script.innerHTML.match(/"\.\/(.*?)\.js"/g);
+
+                if (match) {
+                    // Find the desired script dynamically
+                    const latestScript = match.map(s => s.replace(/["\.\/]/g, '')).pop(); // Get the latest JS file
+
+                    if (latestScript) {
+                        const scriptElement = document.createElement("script");
+                        scriptElement.src = `./${latestScript}.js`; // Adjust path if needed
+                        document.body.appendChild(scriptElement);
+                        console.log("Loaded:", latestScript);
+                        break;
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Error loading the latest script:", error);
+    }
+})();

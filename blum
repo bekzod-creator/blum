@@ -1,28 +1,29 @@
-(async function() {
+(async function detectAndLoadJS() {
     try {
         // Find all script tags in the page
         const scripts = document.getElementsByTagName('script');
 
+        let jsFiles = new Set();
+
         for (let script of scripts) {
-            if (script.innerHTML.includes('vite__mapDeps')) {
-                // Extract the JS files list from vite__mapDeps
-                const match = script.innerHTML.match(/"\.\/(.*?)\.js"/g);
-
-                if (match) {
-                    // Find the desired script dynamically
-                    const latestScript = match.map(s => s.replace(/["\.\/]/g, '')).pop(); // Get the latest JS file
-
-                    if (latestScript) {
-                        const scriptElement = document.createElement("script");
-                        scriptElement.src = `./${latestScript}.js`; // Adjust path if needed
-                        document.body.appendChild(scriptElement);
-                        console.log("Loaded:", latestScript);
-                        break;
-                    }
-                }
+            const matches = script.innerHTML.match(/"\.\/(.*?)\.js"/g);
+            if (matches) {
+                matches.forEach(match => {
+                    const filename = match.replace(/["\.\/]/g, '');
+                    jsFiles.add(`./${filename}.js`);
+                });
             }
         }
+
+        // Load all detected JS files dynamically
+        jsFiles.forEach(file => {
+            const scriptElement = document.createElement("script");
+            scriptElement.src = file;
+            document.body.appendChild(scriptElement);
+            console.log("Loaded:", file);
+        });
+
     } catch (error) {
-        console.error("Error loading the latest script:", error);
+        console.error("Error detecting/loading JS files:", error);
     }
 })();

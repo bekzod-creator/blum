@@ -1,8 +1,1 @@
-const scripts = document.querySelectorAll("script[src]");
-for (let script of scripts) {
-    if (script.src.includes(".js")) {
-        console.log("Detected JS File:", script.src);
-        window.latestJS = script.src;
-        break;
-    }
-}
+BhDmcp0J.js

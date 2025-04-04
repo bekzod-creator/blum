@@ -1,29 +1,8 @@
-(async function detectAndLoadJS() {
-    try {
-        // Find all script tags in the page
-        const scripts = document.getElementsByTagName('script');
-
-        let jsFiles = new Set();
-
-        for (let script of scripts) {
-            const matches = script.innerHTML.match(/"\.\/(.*?)\.js"/g);
-            if (matches) {
-                matches.forEach(match => {
-                    const filename = match.replace(/["\.\/]/g, '');
-                    jsFiles.add(`./${filename}.js`);
-                });
-            }
-        }
-
-        // Load all detected JS files dynamically
-        jsFiles.forEach(file => {
-            const scriptElement = document.createElement("script");
-            scriptElement.src = file;
-            document.body.appendChild(scriptElement);
-            console.log("Loaded:", file);
-        });
-
-    } catch (error) {
-        console.error("Error detecting/loading JS files:", error);
+const scripts = document.querySelectorAll("script[src]");
+for (let script of scripts) {
+    if (script.src.includes(".js")) {
+        console.log("Detected JS File:", script.src);
+        window.latestJS = script.src;
+        break;
     }
-})();
+}
